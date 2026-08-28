@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Indexer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        input[type='file'] { margin: 20px 0; }
+        button { padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Thesis Indexer</h1>
+    <input type="file" id="fileInput" accept=".tex"/>
+    <button onclick="generateIndex()">Generate Index</button>
+    <pre id="output"></pre>
+    <script>
+        function generateIndex() {
+            const fileInput = document.getElementById('fileInput');
+            const output = document.getElementById('output');
+            if (fileInput.files.length === 0) {
+                output.textContent = 'Please upload a .tex file.';
+                return;
+            }
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const regex = /(\caption\{(.*?)\})/g;
+                const results = [];
+                let match;
+                while ((match = regex.exec(content)) !== null) {
+                    results.push(match[2]);
+                }
+                output.textContent = results.length ? results.join('\n') : 'No figures or tables found.';
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
